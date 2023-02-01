@@ -138,7 +138,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 2575811484173154875}
         m_TargetAssemblyTypeName: Bean, Assembly-CSharp
-        m_MethodName: CheckSides
+        m_MethodName: CallForMove
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

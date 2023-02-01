@@ -2,7 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
-using static System.Net.WebRequestMethods;
 
 public class Bean : MonoBehaviour
 {
@@ -13,11 +12,24 @@ public class Bean : MonoBehaviour
     Collider2D collider;
     List<GameObject> verticalConnected = new List<GameObject>();
     List<GameObject> horizontalConnected = new List<GameObject>();
+    bool canMove = false;
+
+    CrushSystem crushSystem;
+
+    LayerMask rayMask = 1 << 5;
 
     private void Start()
     {
+        crushSystem = GameObject.FindWithTag("GameManager").GetComponent<CrushSystem>();
+        StartCoroutine(SetupDelay());
         collider = GetComponent<Collider2D>();
         InvokeRepeating("UpdateBoard", 0f, 1f);
+    }
+
+    IEnumerator SetupDelay()
+    {
+        yield return new WaitForSeconds(0.1f);
+        canMove = true;
     }
 
     public void CheckSides()
@@ -27,100 +39,90 @@ public class Bean : MonoBehaviour
         List<GameObject> verticalConnected = new List<GameObject>();
         List<GameObject> horizontalConnected = new List<GameObject>();
 
-        RaycastHit2D hitUp = Physics2D.Raycast(transform.position, Vector2.up, 100);
-        RaycastHit2D hitDown = Physics2D.Raycast(transform.position, Vector2.down, 100);
-        RaycastHit2D hitLeft = Physics2D.Raycast(transform.position, Vector2.left, 100);
-        RaycastHit2D hitRight = Physics2D.Raycast(transform.position, Vector2.right, 100);       
+        RaycastHit2D hitUp = Physics2D.Raycast(transform.position, Vector2.up, 100, rayMask);
+        RaycastHit2D hitDown = Physics2D.Raycast(transform.position, Vector2.down, 100, rayMask);
+        RaycastHit2D hitLeft = Physics2D.Raycast(transform.position, Vector2.left, 100, rayMask);
+        RaycastHit2D hitRight = Physics2D.Raycast(transform.position, Vector2.right, 100, rayMask);
 
-        if (hitUp.collider != null)
-        {
-            if (hitUp.collider.gameObject.GetComponent<Bean>().beanIndex == beanIndex)
-            {
-                verticalConnected.Add(hitUp.collider.gameObject);
-                Debug.DrawLine(transform.position, hitUp.collider.transform.position, Color.green, 5);
-
-                GameObject tempObject = new GameObject();
-                while (tempObject != null)
-                {
-                    tempObject = hitUp.collider.gameObject.GetComponent<Bean>().CheckFurther(Vector2.up);
-                    if (tempObject != null)
-                    {
-                        verticalConnected.Add(tempObject);
-                        Debug.DrawLine(hitUp.transform.position, tempObject.transform.position, Color.black, 5);
-                    }
-                    continue;
-                }
-            }
-        }
-
-        if (hitDown.collider != null)
-        {
-            if (hitDown.collider.gameObject.GetComponent<Bean>().beanIndex == beanIndex)
-            {
-                verticalConnected.Add(hitDown.collider.gameObject);
-                Debug.DrawLine(transform.position, hitDown.collider.transform.position, Color.green, 5);
-
-                GameObject tempObject = new GameObject();
-                while (tempObject != null)
-                {
-                    tempObject = hitDown.collider.gameObject.GetComponent<Bean>().CheckFurther(Vector2.down);
-                    if (tempObject != null)
-                    {
-                        verticalConnected.Add(tempObject);
-                        Debug.DrawLine(hitDown.transform.position, tempObject.transform.position, Color.black, 5);
-                    }
-                    continue;
-                }
-            }
-        }
-
-        if (hitLeft.collider != null)
-        {
-            if (hitLeft.collider.gameObject.GetComponent<Bean>().beanIndex == beanIndex)
-            {
-                horizontalConnected.Add(hitLeft.collider.gameObject);
-                Debug.DrawLine(transform.position, hitLeft.collider.transform.position, Color.green, 5);
-
-                GameObject tempObject = new GameObject();
-                while (tempObject != null)
-                {
-                    tempObject = hitLeft.collider.gameObject.GetComponent<Bean>().CheckFurther(Vector2.left);
-                    if (tempObject != null)
-                    {
-                        verticalConnected.Add(tempObject);
-                        Debug.DrawLine(hitLeft.transform.position, tempObject.transform.position, Color.black, 5);
-                    }
-                    continue;
-                }
-            }
-        }
-
-        if (hitRight.collider != null)
-        {
-            if (hitRight.collider.gameObject.GetComponent<Bean>().beanIndex == beanIndex)
-            {
-                horizontalConnected.Add(hitRight.collider.gameObject);
-                Debug.DrawLine(transform.position, hitRight.collider.transform.position, Color.green, 5);
-
-                GameObject tempObject = new GameObject();
-                while (tempObject != null)
-                {
-                    tempObject = hitRight.collider.gameObject.GetComponent<Bean>().CheckFurther(Vector2.right);
-                    if (tempObject != null)
-                    {
-                        verticalConnected.Add(tempObject);
-                        Debug.DrawLine(hitRight.transform.position, tempObject.transform.position, Color.black, 5);
-                    }
-                    continue;
-                }
-            }
-        }
+        verticalConnected.AddRange(CheckNeighbouring(hitUp, true, Vector2.up));
+        verticalConnected.AddRange(CheckNeighbouring(hitDown, true, Vector2.down));
+        horizontalConnected.AddRange(CheckNeighbouring(hitLeft, false, Vector2.left));
+        horizontalConnected.AddRange(CheckNeighbouring(hitRight, false, Vector2.right));
 
         collider.enabled = true;
 
         verticalConnected.Add(gameObject);
         horizontalConnected.Add(gameObject);
         StartCoroutine(SmallDelay(verticalConnected, horizontalConnected));
+    }
+
+    List<GameObject> CheckNeighbouring(RaycastHit2D hitter, bool vertical, Vector2 dir)
+    {
+        collider.enabled = false;
+        List<GameObject> tempList = new List<GameObject>();
+        if (hitter.collider != null)
+        {
+            if(hitter.collider.gameObject.GetComponent<Bean>().beanIndex == beanIndex)
+            {
+                if (vertical)
+                {
+                    tempList.Add(hitter.collider.gameObject);
+                    Debug.DrawLine(transform.position, hitter.collider.gameObject.transform.position, Color.green, 5);
+                    tempList.AddRange(hitter.collider.gameObject.GetComponent<Bean>().BouncerVertical(hitter.collider.gameObject, dir));
+                }
+                else
+                {
+                    tempList.Add(hitter.collider.gameObject);
+                    Debug.DrawLine(transform.position, hitter.collider.gameObject.transform.position, Color.green, 5);
+                    tempList.AddRange(hitter.collider.gameObject.GetComponent<Bean>().BouncerHorizontal(hitter.collider.gameObject, dir));
+                }
+            }
+        }
+
+        collider.enabled = true;
+        return tempList;
+    }
+
+    public List<GameObject> BouncerVertical(GameObject originPos, Vector2 dir)
+    {
+        collider.enabled = false;
+        List<GameObject> temper = new List<GameObject>();
+        RaycastHit2D tempHit = Physics2D.Raycast(transform.position, dir, 100, rayMask);
+        GameObject tempy = tempHit.collider.GameObject();
+
+        if (tempy != null && tempy.GetComponent<Collider2D>().gameObject.GetComponent<Bean>().beanIndex == beanIndex)
+        {
+            temper.Add(tempy);
+            Debug.DrawLine(originPos.transform.position, tempy.transform.position, Color.red, 5);
+            tempy.GetComponent<Bean>().BouncerVertical(tempy.gameObject, dir);
+        }
+
+        collider.enabled = true;
+        if (temper == null)
+            return null;
+        else
+            return temper;
+    }
+
+    public List<GameObject> BouncerHorizontal(GameObject originPos, Vector2 dir)
+    {
+        collider.enabled = false;
+        List<GameObject> temper = new List<GameObject>();
+        RaycastHit2D tempHit = Physics2D.Raycast(transform.position, dir, 100, rayMask);
+        GameObject tempy = tempHit.collider.GameObject();
+
+        if (tempy != null && tempy.GetComponent<Collider2D>().gameObject.GetComponent<Bean>().beanIndex == beanIndex)
+        {
+            temper.Add(tempy);
+            Debug.DrawLine(originPos.transform.position, tempy.transform.position, Color.red, 5);
+            tempy.GetComponent<Bean>().BouncerHorizontal(tempy.gameObject, dir);
+        }
+
+        collider.enabled = true;
+        if (temper == null)
+            return null;
+        else
+            return temper;
     }
 
     IEnumerator SmallDelay(List<GameObject> vL, List<GameObject> hL)
@@ -131,7 +133,6 @@ public class Bean : MonoBehaviour
 
     void CheckIfLinedUp(List<GameObject> vL, List<GameObject> hL)
     {
-        Debug.Log("vertical count: " + vL.Count + " and horizontal count: " + hL.Count);
         if(vL.Count > 2 && hL.Count > 2)
         {
             foreach(GameObject obj in vL)
@@ -164,35 +165,40 @@ public class Bean : MonoBehaviour
 
     public void UpdateBoard()
     {
-        RaycastHit2D hitDown = Physics2D.Raycast(transform.position, Vector2.down, 100);
-        Debug.Log("uwu");
+        if (!canMove)
+            return;
 
-        if (hitDown.collider == null)
+        RaycastHit2D hitDown = Physics2D.Raycast(new Vector2(transform.position.x, transform.position.y - 26), Vector2.down, 75);
+        GameObject tempy = hitDown.collider.GameObject();
+
+        if (tempy == null)
         {
-            transform.position = new Vector3(transform.position.x, transform.position.y - 75);
-        }
-    }
+            transform.position = new Vector2(transform.position.x, transform.position.y - 75);
 
-    public GameObject CheckFurther(Vector2 direction)
-    {
-        collider.enabled = false;
-        RaycastHit2D tempHit = Physics2D.Raycast(transform.position, direction, 100);
-
-        if (tempHit.collider != null)
-        {
-            if (tempHit.collider.gameObject.GetComponent<Bean>().beanIndex == beanIndex)
-            {
-                collider.enabled = true;
-                return tempHit.transform.gameObject;
-            }
+            RaycastHit2D landCheck = Physics2D.Raycast(new Vector2(transform.position.x, transform.position.y - 26), Vector2.down, 75);
+            GameObject obj = hitDown.collider.GameObject();
+            if(obj != null)
+                CheckSides();
         }
-        collider.enabled = true;
-        return null;
     }
 
     public void SelfDestruct()
     {
         CrushSystem.Score += 10;
         Destroy(gameObject);
+    }
+
+    public void CallForMove()
+    {
+        crushSystem.LockBeans(gameObject);
+    }
+
+    public void GoToDelay() { StartCoroutine(Delay()); }
+
+    public IEnumerator Delay()
+    {
+        Debug.Log("hello");
+        yield return new WaitForSeconds(0.1f);
+        CheckSides();
     }
 }
