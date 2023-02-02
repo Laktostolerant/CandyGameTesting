@@ -299,6 +299,7 @@ MonoBehaviour:
   - {fileID: 5473868108789103213, guid: 96c2fa90c7089cd4380679622ec4c483, type: 3}
   - {fileID: 9171970646529499840, guid: 56a47bd6e556c2d40af58e571390e89b, type: 3}
   - {fileID: 1050955736715045451, guid: 47a64f33bae947e40bfea4f765d920db, type: 3}
+  circleObject: {fileID: 7083538970913305043, guid: e9adda51921141e4cbb661cb9a8ba4ab, type: 3}
 --- !u!114 &461838607
 MonoBehaviour:
   m_ObjectHideFlags: 0

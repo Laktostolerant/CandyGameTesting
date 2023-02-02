@@ -16,6 +16,8 @@ public class Bean : MonoBehaviour
 
     CrushSystem crushSystem;
 
+    public bool illegalMoveFound { get; private set; }
+
     LayerMask rayMask = 1 << 5;
 
     private void Start()
@@ -28,7 +30,7 @@ public class Bean : MonoBehaviour
 
     IEnumerator SetupDelay()
     {
-        yield return new WaitForSeconds(0.1f);
+        yield return new WaitForSeconds(0.01f);
         canMove = true;
     }
 
@@ -36,13 +38,12 @@ public class Bean : MonoBehaviour
     {
         collider.enabled = false;
 
-        List<GameObject> verticalConnected = new List<GameObject>();
-        List<GameObject> horizontalConnected = new List<GameObject>();
-
         RaycastHit2D hitUp = Physics2D.Raycast(transform.position, Vector2.up, 100, rayMask);
         RaycastHit2D hitDown = Physics2D.Raycast(transform.position, Vector2.down, 100, rayMask);
         RaycastHit2D hitLeft = Physics2D.Raycast(transform.position, Vector2.left, 100, rayMask);
         RaycastHit2D hitRight = Physics2D.Raycast(transform.position, Vector2.right, 100, rayMask);
+
+        Debug.DrawLine(transform.position, new Vector2(transform.position.x + 10, transform.position.y + 10), Color.black, 10);
 
         verticalConnected.AddRange(CheckNeighbouring(hitUp, true, Vector2.up));
         verticalConnected.AddRange(CheckNeighbouring(hitDown, true, Vector2.down));
@@ -53,7 +54,8 @@ public class Bean : MonoBehaviour
 
         verticalConnected.Add(gameObject);
         horizontalConnected.Add(gameObject);
-        StartCoroutine(SmallDelay(verticalConnected, horizontalConnected));
+
+        CheckIfLinedUp();
     }
 
     List<GameObject> CheckNeighbouring(RaycastHit2D hitter, bool vertical, Vector2 dir)
@@ -62,7 +64,7 @@ public class Bean : MonoBehaviour
         List<GameObject> tempList = new List<GameObject>();
         if (hitter.collider != null)
         {
-            if(hitter.collider.gameObject.GetComponent<Bean>().beanIndex == beanIndex)
+            if (hitter.collider.gameObject.GetComponent<Bean>().beanIndex == beanIndex)
             {
                 if (vertical)
                 {
@@ -86,81 +88,85 @@ public class Bean : MonoBehaviour
     public List<GameObject> BouncerVertical(GameObject originPos, Vector2 dir)
     {
         collider.enabled = false;
-        List<GameObject> temper = new List<GameObject>();
+        List<GameObject> tempListToAddToMain = new List<GameObject>();
         RaycastHit2D tempHit = Physics2D.Raycast(transform.position, dir, 100, rayMask);
-        GameObject tempy = tempHit.collider.GameObject();
+        GameObject temObject = tempHit.collider.GameObject();
 
-        if (tempy != null && tempy.GetComponent<Collider2D>().gameObject.GetComponent<Bean>().beanIndex == beanIndex)
+        if (temObject != null && temObject.GetComponent<Collider2D>().gameObject.GetComponent<Bean>().beanIndex == beanIndex)
         {
-            temper.Add(tempy);
-            Debug.DrawLine(originPos.transform.position, tempy.transform.position, Color.red, 5);
-            tempy.GetComponent<Bean>().BouncerVertical(tempy.gameObject, dir);
+            tempListToAddToMain.Add(temObject);
+            Debug.DrawLine(originPos.transform.position, temObject.transform.position, Color.red, 5);
+            tempListToAddToMain.AddRange(temObject.GetComponent<Bean>().BouncerVertical(temObject.gameObject, dir));
         }
 
         collider.enabled = true;
-        if (temper == null)
+        if (tempListToAddToMain == null)
             return null;
         else
-            return temper;
+            return tempListToAddToMain;
     }
 
     public List<GameObject> BouncerHorizontal(GameObject originPos, Vector2 dir)
     {
         collider.enabled = false;
-        List<GameObject> temper = new List<GameObject>();
+        List<GameObject> tempListToAddToMain = new List<GameObject>();
         RaycastHit2D tempHit = Physics2D.Raycast(transform.position, dir, 100, rayMask);
-        GameObject tempy = tempHit.collider.GameObject();
+        GameObject tempObject = tempHit.collider.GameObject();
 
-        if (tempy != null && tempy.GetComponent<Collider2D>().gameObject.GetComponent<Bean>().beanIndex == beanIndex)
+        if (tempObject != null && tempObject.GetComponent<Collider2D>().gameObject.GetComponent<Bean>().beanIndex == beanIndex)
         {
-            temper.Add(tempy);
-            Debug.DrawLine(originPos.transform.position, tempy.transform.position, Color.red, 5);
-            tempy.GetComponent<Bean>().BouncerHorizontal(tempy.gameObject, dir);
+            tempListToAddToMain.Add(tempObject);
+            Debug.DrawLine(originPos.transform.position, tempObject.transform.position, Color.red, 5);
+            tempListToAddToMain.AddRange(tempObject.GetComponent<Bean>().BouncerHorizontal(tempObject.gameObject, dir));
         }
 
         collider.enabled = true;
-        if (temper == null)
+        if (tempListToAddToMain == null)
             return null;
         else
-            return temper;
+            return tempListToAddToMain;
     }
 
-    IEnumerator SmallDelay(List<GameObject> vL, List<GameObject> hL)
+    void CheckIfLinedUp()
     {
-        yield return new WaitForSeconds(0.5f);
-        CheckIfLinedUp(vL, hL);
-    }
+        illegalMoveFound = false;
 
-    void CheckIfLinedUp(List<GameObject> vL, List<GameObject> hL)
-    {
-        if(vL.Count > 2 && hL.Count > 2)
+        if (verticalConnected.Count > 2 && horizontalConnected.Count > 2)
         {
-            foreach(GameObject obj in vL)
+            foreach (GameObject obj in verticalConnected)
             {
                 obj.GetComponent<Bean>().SelfDestruct();
             }
 
-            foreach(GameObject obj in hL)
+            foreach (GameObject obj in horizontalConnected)
             {
                 obj.GetComponent<Bean>().SelfDestruct();
             }
-        }
-        
-        if(vL.Count > 2 && hL.Count < 3)
-        {
-            foreach (GameObject obj in vL)
-            {
-                obj.GetComponent<Bean>().SelfDestruct();
-            }
+            return;
         }
 
-        if(hL.Count > 2 && vL.Count < 3)
+        if (verticalConnected.Count > 2 && horizontalConnected.Count < 3)
         {
-            foreach (GameObject obj in hL)
+            foreach (GameObject obj in verticalConnected)
             {
                 obj.GetComponent<Bean>().SelfDestruct();
             }
+            return;
         }
+
+        if (horizontalConnected.Count > 2 && verticalConnected.Count < 3)
+        {
+            foreach (GameObject obj in horizontalConnected)
+            {
+                obj.GetComponent<Bean>().SelfDestruct();
+            }
+            return;
+        }
+
+        Debug.Log("no can do");
+        verticalConnected.Clear();
+        horizontalConnected.Clear();
+        illegalMoveFound = true;
     }
 
     public void UpdateBoard()
@@ -177,7 +183,7 @@ public class Bean : MonoBehaviour
 
             RaycastHit2D landCheck = Physics2D.Raycast(new Vector2(transform.position.x, transform.position.y - 26), Vector2.down, 75);
             GameObject obj = hitDown.collider.GameObject();
-            if(obj != null)
+            if (obj != null)
                 CheckSides();
         }
     }
@@ -188,16 +194,12 @@ public class Bean : MonoBehaviour
         Destroy(gameObject);
     }
 
-    public void CallForMove()
-    {
-        crushSystem.LockBeans(gameObject);
-    }
+    public void CallForMove() { crushSystem.LockBeans(gameObject); }
 
     public void GoToDelay() { StartCoroutine(Delay()); }
 
     public IEnumerator Delay()
     {
-        Debug.Log("hello");
         yield return new WaitForSeconds(0.1f);
         CheckSides();
     }
