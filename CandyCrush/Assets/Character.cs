@@ -6,4 +6,7 @@ using UnityEngine;
 public class Character : ScriptableObject
 {
     [SerializeField] string name;
+    [TextArea(3, 5)]
+    [SerializeField] string description;
+    [SerializeField] Texture2D icon;
 }

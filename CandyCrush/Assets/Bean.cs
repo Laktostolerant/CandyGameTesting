@@ -25,7 +25,7 @@ public class Bean : MonoBehaviour
         crushSystem = GameObject.FindWithTag("GameManager").GetComponent<CrushSystem>();
         StartCoroutine(SetupDelay());
         collider = GetComponent<Collider2D>();
-        InvokeRepeating("UpdateBoard", 0f, 1f);
+        StartCoroutine(Delay());
     }
 
     IEnumerator SetupDelay()
@@ -162,8 +162,6 @@ public class Bean : MonoBehaviour
             }
             return;
         }
-
-        Debug.Log("no can do");
         verticalConnected.Clear();
         horizontalConnected.Clear();
         illegalMoveFound = true;
@@ -181,10 +179,11 @@ public class Bean : MonoBehaviour
         {
             transform.position = new Vector2(transform.position.x, transform.position.y - 75);
 
-            RaycastHit2D landCheck = Physics2D.Raycast(new Vector2(transform.position.x, transform.position.y - 26), Vector2.down, 75);
-            GameObject obj = hitDown.collider.GameObject();
-            if (obj != null)
-                CheckSides();
+            RaycastHit2D landCheck = Physics2D.Raycast(new Vector2(transform.position.x, transform.position.y - 26), Vector2.down, 74);
+            GameObject obj = landCheck.collider.GameObject();
+            Debug.DrawRay(new Vector2(transform.position.x, transform.position.y - 26), Vector2.down * 74, Color.blue, 75);
+            if (obj)
+                StartCoroutine(Delay());
         }
     }
 

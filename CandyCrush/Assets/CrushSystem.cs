@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using Unity.VisualScripting;
+using static UnityEngine.ParticleSystem;
 
 public class CrushSystem : MonoBehaviour
 {
@@ -26,12 +27,10 @@ public class CrushSystem : MonoBehaviour
 
     bool moveDelay;
 
-    Coroutine coro;
-
     void Start()
     {
         SetupBoard();
-        InvokeRepeating("RefillBoard", 0f, 1f);
+        InvokeRepeating("RefillBoard", 1f, 1f);
     }
 
     private void Update()
@@ -77,15 +76,9 @@ public class CrushSystem : MonoBehaviour
             selectCircleTwo.transform.SetParent(gameObject.transform);
         }
 
-        if(selectedOne == selectedTwo)
-        {
-            ClearSelection();
-            return;
-        }
-
-        if (selectCircleOne != null && selectCircleTwo != null)
+        if (selectedOne != null && selectedTwo != null)
             if(Vector2.Distance(selectedOne.transform.position, selectedTwo.transform.position) < 80)
-            Switcheroo(selectedOne, selectedTwo);
+                Switcheroo(selectedOne, selectedTwo);
 
         ClearSelection();
     }
@@ -108,10 +101,15 @@ public class CrushSystem : MonoBehaviour
         first.transform.position = tempos2;
         second.transform.position = tempos1;
 
+        StartCoroutine(CheckSides(first, second));
+        StartCoroutine(LegalityCheck(first, second));
+    }
+
+    IEnumerator CheckSides(GameObject first, GameObject second)
+    {
+        yield return new WaitForSeconds(0.1f);
         first.GetComponent<Bean>().CheckSides();
         second.GetComponent<Bean>().CheckSides();
-
-        coro = StartCoroutine(LegalityCheck(first, second));
     }
 
     IEnumerator LegalityCheck(GameObject first, GameObject second)
@@ -121,7 +119,7 @@ public class CrushSystem : MonoBehaviour
         Vector2 tempos1 = first.transform.position;
         Vector2 tempos2 = second.transform.position;
 
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(1f);
 
         if(first == null || second == null)
             noMore = true;
@@ -140,7 +138,6 @@ public class CrushSystem : MonoBehaviour
                 second.transform.position = tempos1;
             }
         }
-
         moveDelay = false;
     }
 
@@ -148,22 +145,22 @@ public class CrushSystem : MonoBehaviour
     {
         for(int i = 0; i < 7; i++)
         {
-
-            GameObject temp = Instantiate(new GameObject(), new Vector2(-50 + 75 * i, 275), new Quaternion(0, 0, 0, 0));
-            temp.transform.SetParent(gameObject.transform, false);
-
-            Vector2 checkPos = temp.transform.position;
+            Vector2 checkPos = new Vector2(910 + i * 75, 815);
             RaycastHit2D hitDown = Physics2D.Raycast(checkPos, Vector2.down, 75);
 
-            Debug.DrawLine(temp.transform.position, new Vector2(temp.transform.position.x, temp.transform.position.y - 75), Color.blue, 1);
             GameObject obj = hitDown.collider.GameObject();
             if(obj == null)
             {
                 var newBean = Instantiate(beans[Random.Range(0, beans.Length)], new Vector2(-50 + (i * 75), 200), new Quaternion(0, 0, 0, 0));
                 newBean.transform.SetParent(gameObject.transform, false);
+                beansList.Add(newBean);
             }
+        }
 
-            Destroy(temp);
+        foreach(GameObject bean in beansList)
+        {
+            if(bean != null)
+                bean.GetComponent<Bean>().UpdateBoard();
         }
     }
 }

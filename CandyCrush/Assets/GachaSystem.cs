@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class GachaSystem : MonoBehaviour
 {
+    [Header("Protein Powder")]
+    [SerializeField] public static int amountOfProteinPowder;
+
     [SerializeField] List<Character> characterList = new List<Character>();
     List<Character> ownedCharacters = new List<Character>();
 
