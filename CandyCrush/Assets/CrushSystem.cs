@@ -7,7 +7,6 @@ using static UnityEngine.ParticleSystem;
 
 public class CrushSystem : MonoBehaviour
 {
-    public static int Score = 0;
 
     [SerializeField] TextMeshProUGUI m_Object;
 
@@ -27,20 +26,22 @@ public class CrushSystem : MonoBehaviour
 
     bool moveDelay;
 
+    StorageSystem storageSystem;
+
     void Start()
     {
         SetupBoard();
         InvokeRepeating("RefillBoard", 1f, 1f);
+        storageSystem = GameObject.FindWithTag("StorageSystem").GetComponent<StorageSystem>();
     }
 
     private void Update()
     {
-        m_Object.text = "CURRENT SCORE: " + Score;
+        m_Object.text = "CURRENT SCORE: " + storageSystem.proteinCount;
     }
 
     public void SetupBoard()
     {
-        Score = 0;
         foreach(GameObject bean in beansList)
             Destroy(bean);
 

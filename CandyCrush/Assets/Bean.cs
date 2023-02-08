@@ -189,7 +189,9 @@ public class Bean : MonoBehaviour
 
     public void SelfDestruct()
     {
-        CrushSystem.Score += 10;
+        StorageSystem storageSystem = GameObject.FindWithTag("StorageSystem").GetComponent<StorageSystem>();
+        if (storageSystem)
+            storageSystem.ChangeProteinCount(10);
         Destroy(gameObject);
     }
 
