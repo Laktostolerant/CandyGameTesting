@@ -13,11 +13,6 @@ public class StorageSystem : MonoBehaviour
     [Header("The slots where owned characters are displayed")]
     [SerializeField] Image[] displaySlots;
 
-    void OnEable()
-    {
-        InventoryDisplay();
-    }
-
     void Awake()
     {
         GameObject[] objs = GameObject.FindGameObjectsWithTag("StorageSystem");
@@ -47,11 +42,12 @@ public class StorageSystem : MonoBehaviour
         characters[characterIndex].AcquireCharacter();
     }
 
-    void InventoryDisplay()
+    public void InventoryDisplay()
     {
-        for(int index = 0; index < displaySlots.Length; index++) 
+        for(int index = 0; index < characters.Length; index++) 
         {
-            displaySlots[index].GetComponent<RawImage>().texture = characters[index].currentIcon;
+            Debug.Log("setting display!");
+            displaySlots[index].GetComponent<Image>().sprite = characters[index].currentIcon;
         }
     }
 }

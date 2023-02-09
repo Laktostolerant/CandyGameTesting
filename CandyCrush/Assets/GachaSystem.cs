@@ -48,7 +48,7 @@ public class GachaSystem : MonoBehaviour
         bottle.SetBool("open", true);
         visualEffect.Play();
 
-        AddCharacter(Random.Range(0, storageSystem.characters.Length - 1));
+        AddCharacter(Random.Range(0, storageSystem.characters.Length));
 
         StartCoroutine(Cooldown());
     }

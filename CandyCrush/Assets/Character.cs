@@ -10,8 +10,9 @@ public class Character : ScriptableObject
 
     [SerializeField] string characterIndex;
     int level;
-    [SerializeField] Texture2D[] iconTiers;
-    public Texture2D currentIcon { get; private set; } 
+    [SerializeField] Sprite[] iconTiers;
+    public Sprite currentIcon { get; private set; } 
+
 
     public void AcquireCharacter()
     {

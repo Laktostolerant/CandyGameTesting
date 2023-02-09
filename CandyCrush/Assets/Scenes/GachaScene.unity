@@ -236,8 +236,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   characters:
-  - {fileID: 11400000, guid: db43633a83cb3ff4da52b288db27296a, type: 2}
   - {fileID: 11400000, guid: ef20ff6be56a7c24db57a9f8b2ef59a6, type: 2}
+  - {fileID: 11400000, guid: db43633a83cb3ff4da52b288db27296a, type: 2}
   displaySlots:
   - {fileID: 323277155}
   - {fileID: 427782635}
@@ -3333,6 +3333,18 @@ MonoBehaviour:
         m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
         m_MethodName: SetActive
         m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 86649775}
+        m_TargetAssemblyTypeName: StorageSystem, Assembly-CSharp
+        m_MethodName: InventoryDisplay
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
