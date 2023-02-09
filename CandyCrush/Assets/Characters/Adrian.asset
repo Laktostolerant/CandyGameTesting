@@ -12,7 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 390da9e95e9a50149a3f0051e14efb7c, type: 3}
   m_Name: Adrian
   m_EditorClassIdentifier: 
-  name: Adrian
-  description: Hey... You lookin steamy over there, need a towel? You can borrow
-    mine.
-  icon: {fileID: 2800000, guid: 7b6e6d44e4e435744ab07df3a6b25b29, type: 3}
+  characterIndex: 1
+  iconTiers:
+  - {fileID: 2800000, guid: b202769356a2e804cb352251d4a5fffe, type: 3}
+  - {fileID: 2800000, guid: 01747b52f57ee4d49909211094e34328, type: 3}
+  - {fileID: 2800000, guid: 913acf8544f9f3e45a82d824a79f6e3b, type: 3}

@@ -9,8 +9,6 @@ public class GachaSystem : MonoBehaviour
     [Header("Protein Powder")]
     [SerializeField] int summonCost;
 
-    [SerializeField] List<Character> characterList = new List<Character>();
-
     bool canPull;
 
     [SerializeField] Animator cap;
@@ -50,7 +48,7 @@ public class GachaSystem : MonoBehaviour
         bottle.SetBool("open", true);
         visualEffect.Play();
 
-        AddCharacter(Instantiate(characterList[Random.Range(0, characterList.Count)]));
+        AddCharacter(Random.Range(0, storageSystem.characters.Length - 1));
 
         StartCoroutine(Cooldown());
     }
@@ -63,10 +61,10 @@ public class GachaSystem : MonoBehaviour
         canPull = true;
     }
 
-    void AddCharacter(Character character)
+    void AddCharacter(int index)
     {
         StorageSystem storageSystem = GameObject.FindWithTag("StorageSystem").GetComponent<StorageSystem>();
         if (storageSystem)
-            storageSystem.AddCharacter(character);
+            storageSystem.AddCharacter(index);
     }
 }

@@ -12,6 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 390da9e95e9a50149a3f0051e14efb7c, type: 3}
   m_Name: JMichael
   m_EditorClassIdentifier: 
-  name: JMichael
-  description: Fancy a trip to the... hot... tub, with me?
-  icon: {fileID: 2800000, guid: 14dc26737701dc449807743360757c6e, type: 3}
+  characterIndex: 0
+  iconTiers:
+  - {fileID: 2800000, guid: b202769356a2e804cb352251d4a5fffe, type: 3}
+  - {fileID: 2800000, guid: 913acf8544f9f3e45a82d824a79f6e3b, type: 3}
+  - {fileID: 2800000, guid: 26e87ee6ef46b2543a3956a87e951f1e, type: 3}

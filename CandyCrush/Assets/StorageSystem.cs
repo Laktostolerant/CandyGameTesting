@@ -1,11 +1,22 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class StorageSystem : MonoBehaviour
 {
+    [Header("All available characters in the game")]
+    [SerializeField] public Character[] characters;
+
     public int proteinCount { get; protected set; }
-    public List<Character> ownedCharacters { get; protected set; } = new List<Character>();
+
+    [Header("The slots where owned characters are displayed")]
+    [SerializeField] Image[] displaySlots;
+
+    void OnEable()
+    {
+        InventoryDisplay();
+    }
 
     void Awake()
     {
@@ -18,14 +29,11 @@ public class StorageSystem : MonoBehaviour
         DontDestroyOnLoad(this.gameObject);
     }
 
-    private void Update()
+    private void Start()
     {
-        if (Input.GetKeyDown(KeyCode.Q))
+        foreach(Character character in characters)
         {
-            foreach (Character character in ownedCharacters)
-            {
-                Debug.Log("character: " + character.name);
-            }
+            character.ResetLevel();
         }
     }
 
@@ -34,9 +42,16 @@ public class StorageSystem : MonoBehaviour
         proteinCount += alteration;
     }
 
-    public void AddCharacter(Character character)
+    public void AddCharacter(int characterIndex)
     {
-        ownedCharacters.Add(character);
-        Debug.Log("YOU GOT: " + ownedCharacters[ownedCharacters.Count - 1].name);
+        characters[characterIndex].AcquireCharacter();
+    }
+
+    void InventoryDisplay()
+    {
+        for(int index = 0; index < displaySlots.Length; index++) 
+        {
+            displaySlots[index].GetComponent<RawImage>().texture = characters[index].currentIcon;
+        }
     }
 }
