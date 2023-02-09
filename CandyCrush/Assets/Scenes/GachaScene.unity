@@ -239,14 +239,15 @@ MonoBehaviour:
   - {fileID: 11400000, guid: ef20ff6be56a7c24db57a9f8b2ef59a6, type: 2}
   - {fileID: 11400000, guid: db43633a83cb3ff4da52b288db27296a, type: 2}
   displaySlots:
-  - {fileID: 323277155}
-  - {fileID: 427782635}
-  - {fileID: 629635553}
-  - {fileID: 627740468}
-  - {fileID: 257993255}
-  - {fileID: 763508944}
-  - {fileID: 1071114081}
-  - {fileID: 365427969}
+  - {fileID: 323277153}
+  - {fileID: 427782633}
+  - {fileID: 629635551}
+  - {fileID: 627740466}
+  - {fileID: 257993253}
+  - {fileID: 763508942}
+  - {fileID: 1071114079}
+  - {fileID: 365427967}
+  defaultCard: {fileID: 21300000, guid: b202769356a2e804cb352251d4a5fffe, type: 3}
 --- !u!1 &180284377
 GameObject:
   m_ObjectHideFlags: 0
@@ -395,7 +396,7 @@ GameObject:
   - component: {fileID: 257993255}
   m_Layer: 5
   m_Name: Slot4
-  m_TagString: Untagged
+  m_TagString: slot
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -471,7 +472,7 @@ GameObject:
   - component: {fileID: 323277155}
   m_Layer: 5
   m_Name: Slot0
-  m_TagString: Untagged
+  m_TagString: slot
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -682,7 +683,7 @@ GameObject:
   - component: {fileID: 365427969}
   m_Layer: 5
   m_Name: Slot7
-  m_TagString: Untagged
+  m_TagString: slot
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -904,7 +905,7 @@ GameObject:
   - component: {fileID: 427782635}
   m_Layer: 5
   m_Name: Slot1
-  m_TagString: Untagged
+  m_TagString: slot
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1138,7 +1139,7 @@ GameObject:
   - component: {fileID: 627740468}
   m_Layer: 5
   m_Name: Slot3
-  m_TagString: Untagged
+  m_TagString: slot
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1214,7 +1215,7 @@ GameObject:
   - component: {fileID: 629635553}
   m_Layer: 5
   m_Name: Slot2
-  m_TagString: Untagged
+  m_TagString: slot
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1290,7 +1291,7 @@ GameObject:
   - component: {fileID: 763508944}
   m_Layer: 5
   m_Name: Slot5
-  m_TagString: Untagged
+  m_TagString: slot
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -2107,7 +2108,7 @@ GameObject:
   - component: {fileID: 1071114081}
   m_Layer: 5
   m_Name: Slot6
-  m_TagString: Untagged
+  m_TagString: slot
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -3343,7 +3344,7 @@ MonoBehaviour:
         m_CallState: 2
       - m_Target: {fileID: 86649775}
         m_TargetAssemblyTypeName: StorageSystem, Assembly-CSharp
-        m_MethodName: InventoryDisplay
+        m_MethodName: OpenInventory
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -3403,7 +3404,7 @@ GameObject:
   - component: {fileID: 1840454208}
   m_Layer: 0
   m_Name: GachaSystem
-  m_TagString: Untagged
+  m_TagString: GachaSystem
   m_Icon: {fileID: -5397416234189338067, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -3426,6 +3427,15 @@ MonoBehaviour:
   visualEffect: {fileID: 1311829983}
   pullCurrencyText: {fileID: 180284379}
   homeCurrencyText: {fileID: 1701632556}
+  displaySlots:
+  - {fileID: 323277153}
+  - {fileID: 427782633}
+  - {fileID: 629635551}
+  - {fileID: 627740466}
+  - {fileID: 257993253}
+  - {fileID: 763508942}
+  - {fileID: 1071114079}
+  - {fileID: 365427967}
 --- !u!4 &1840454209
 Transform:
   m_ObjectHideFlags: 0

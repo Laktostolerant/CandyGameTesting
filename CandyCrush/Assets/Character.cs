@@ -6,28 +6,22 @@ using UnityEngine.UI;
 [CreateAssetMenu()]
 public class Character : ScriptableObject
 {
-    public bool owned { get; private set; }
-
+    bool owned;
     [SerializeField] string characterIndex;
-    int level;
-    [SerializeField] Sprite[] iconTiers;
-    public Sprite currentIcon { get; private set; } 
+    [SerializeField] public Sprite icon;
 
+    public void Start()
+    {
+        owned = false;
+    }
 
     public void AcquireCharacter()
     {
-        level++;
-        Debug.Log("character " + characterIndex + " is now level " + level);
-        if (iconTiers[level])
-            currentIcon = iconTiers[level];
-        else
-        {
-            currentIcon = iconTiers[iconTiers.Length - 1];
-        }
+        owned = true;
     }
 
-    public void ResetLevel()
+    public bool IsOwned()
     {
-        level = 0;
+        return owned;
     }
 }

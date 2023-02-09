@@ -13,7 +13,4 @@ MonoBehaviour:
   m_Name: JMichael
   m_EditorClassIdentifier: 
   characterIndex: 0
-  iconTiers:
-  - {fileID: 21300000, guid: b202769356a2e804cb352251d4a5fffe, type: 3}
-  - {fileID: 21300000, guid: 913acf8544f9f3e45a82d824a79f6e3b, type: 3}
-  - {fileID: 21300000, guid: 26e87ee6ef46b2543a3956a87e951f1e, type: 3}
+  icon: {fileID: 21300000, guid: 913acf8544f9f3e45a82d824a79f6e3b, type: 3}

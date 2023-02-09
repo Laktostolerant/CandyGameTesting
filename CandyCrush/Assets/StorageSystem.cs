@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class StorageSystem : MonoBehaviour
@@ -11,7 +13,8 @@ public class StorageSystem : MonoBehaviour
     public int proteinCount { get; protected set; }
 
     [Header("The slots where owned characters are displayed")]
-    [SerializeField] Image[] displaySlots;
+    [SerializeField] GameObject[] displaySlots;
+    [SerializeField] Sprite defaultCard;
 
     void Awake()
     {
@@ -24,14 +27,6 @@ public class StorageSystem : MonoBehaviour
         DontDestroyOnLoad(this.gameObject);
     }
 
-    private void Start()
-    {
-        foreach(Character character in characters)
-        {
-            character.ResetLevel();
-        }
-    }
-
     public void ChangeProteinCount(int alteration)
     {
         proteinCount += alteration;
@@ -40,14 +35,38 @@ public class StorageSystem : MonoBehaviour
     public void AddCharacter(int characterIndex)
     {
         characters[characterIndex].AcquireCharacter();
+        Debug.Log("You got " + characters[characterIndex].name);
     }
 
-    public void InventoryDisplay()
+    public void OpenInventory()
     {
+        StartCoroutine(InventoryDisplay());
+    }
+
+    IEnumerator InventoryDisplay()
+    {
+        yield return new WaitForSeconds(0.1f);
+
         for(int index = 0; index < characters.Length; index++) 
         {
-            Debug.Log("setting display!");
-            displaySlots[index].GetComponent<Image>().sprite = characters[index].currentIcon;
+            if(characters[index].IsOwned())
+            {
+                displaySlots[index].GetComponent<Image>().sprite = characters[index].icon;
+            }
+            else
+            {
+                displaySlots[index].GetComponent<Image>().sprite = defaultCard;
+            }
         }
+    }
+
+    public void OnLevelWasLoaded(int level)
+    {
+        Debug.Log("I RAN");
+        if (level != 1)
+            return;
+
+        GachaSystem gachaSystem = GameObject.FindWithTag("GachaSystem").GetComponent<GachaSystem>();
+        displaySlots = gachaSystem.displaySlots;
     }
 }

@@ -20,6 +20,8 @@ public class GachaSystem : MonoBehaviour
 
     StorageSystem storageSystem;
 
+    [SerializeField] public GameObject[] displaySlots;
+
     private void Start()
     {
         canPull = true;

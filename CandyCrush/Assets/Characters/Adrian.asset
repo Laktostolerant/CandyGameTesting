@@ -13,7 +13,4 @@ MonoBehaviour:
   m_Name: Adrian
   m_EditorClassIdentifier: 
   characterIndex: 1
-  iconTiers:
-  - {fileID: 21300000, guid: b202769356a2e804cb352251d4a5fffe, type: 3}
-  - {fileID: 21300000, guid: 01747b52f57ee4d49909211094e34328, type: 3}
-  - {fileID: 21300000, guid: f8694e22d1e91cc458a016e95413f999, type: 3}
+  icon: {fileID: 21300000, guid: 01747b52f57ee4d49909211094e34328, type: 3}
